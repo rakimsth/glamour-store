@@ -3,6 +3,7 @@ const authModel = require("../auth/auth.model");
 const userModel = require("../users/user.model");
 const { mail } = require("../../services/mail");
 const { generateOTP, verifyOTP } = require("../../utils/otp");
+const { generateJWT } = require("../../utils/jwt");
 
 const create = async (payload) => {
   const { password, ...rest } = payload;
@@ -25,7 +26,9 @@ const login = async (email, password) => {
   if (!user.isActive) throw new Error("User is blocked. Please contact Admin");
   const result = await bcrypt.compare(password, user?.password);
   if (!result) throw new Error("Email or Password is invalid");
-  return result;
+  // Generate the token
+  const token = generateJWT({ email: user?.email, roles: user?.roles ?? [] });
+  return { token };
 };
 
 const verifyEmail = async (email, token) => {
