@@ -6,18 +6,18 @@ const { generateOTP, verifyOTP } = require("../../utils/otp");
 const { generateJWT } = require("../../utils/jwt");
 
 const create = async (payload) => {
-  const { password, ...rest } = payload;
+  const { password, roles, ...rest } = payload;
   rest.password = await bcrypt.hash(password, +process.env.SALT_ROUND);
   const user = await userModel.create(rest);
   const token = generateOTP();
   await authModel.create({ email: user?.email, token });
   // send token to email
-  await mail(user?.email, token);
-  return user;
+  const mail = await mail(user?.email, token);
+  return mail;
 };
 
 const login = async (email, password) => {
-  const user = await userModel.findOne({ email });
+  const user = await userModel.findOne({ email }).select("+password");
   if (!user) throw new Error("User not found");
   // Email Exist ??
   if (!user.isEmailVerified)

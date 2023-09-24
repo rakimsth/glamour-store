@@ -19,7 +19,9 @@ app.use(express.json());
 app.use("/", indexRouter);
 
 app.use((err, req, res, next) => {
-  const errMsg = err ? err.toString() : "Something Went Wrong...";
+  const errMsg = err
+    ? err.toString().split("Error: ")[1]
+    : "Something Went Wrong...";
   res.status(500).json({ data: "", msg: errMsg });
 });
 

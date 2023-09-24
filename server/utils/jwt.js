@@ -14,7 +14,7 @@ const verifyJWT = (token) => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
-    throw new err("User Unauthorized");
+    throw new Error("Token is invalid");
   }
 };
 
