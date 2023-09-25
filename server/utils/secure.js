@@ -21,6 +21,7 @@ const secureAPI = (roles) => {
       if (!user) throw new Error("User not found");
       const { roles: userRoles, _id } = user;
       req.currentUser = _id;
+      req.currentRoles = userRoles;
       // user role check
       const isAllowed = compareRoles(roles ?? [], userRoles);
       if (!isAllowed) throw new Error("User Unauthorized");

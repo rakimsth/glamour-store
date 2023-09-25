@@ -17,7 +17,9 @@ const create = async (payload) => {
 };
 
 const login = async (email, password) => {
-  const user = await userModel.findOne({ email }).select("+password");
+  const user = await userModel
+    .findOne({ email, isArchived: false })
+    .select("+password");
   if (!user) throw new Error("User not found");
   // Email Exist ??
   if (!user.isEmailVerified)
@@ -66,4 +68,41 @@ const regenerateToken = async (email) => {
   return true;
 };
 
-module.exports = { create, login, regenerateToken, verifyEmail };
+const generateFPToken = async (email) => {
+  const user = await userModel.findOne({ email });
+  if (!user) throw new Error("User not found");
+  const token = generateOTP();
+  await authModel.create({ email: user?.email, token });
+  // send token to email
+  return mail(user?.email, token);
+};
+
+const forgotPassword = async (email, token, password) => {
+  // Validate the email
+  const user = await authModel.findOne({ email });
+  if (!user) throw new Error("User not found");
+  // Check if token has expired
+  const isValidOTP = verifyOTP(token);
+  if (!isValidOTP) throw new Error("Token expired");
+  // authmodel otp token compare
+  const isValid = user?.token === +token;
+  if (!isValid) throw new Error("Token Mismatched");
+  // replace the stored password with new password
+  await userModel.findOneAndUpdate(
+    { email },
+    { password: await bcrypt.hash(password, +process.env.SALT_ROUND) },
+    { new: true }
+  );
+  // delete auth model token
+  await authModel.deleteOne({ email });
+  return true;
+};
+
+module.exports = {
+  create,
+  forgotPassword,
+  generateFPToken,
+  login,
+  regenerateToken,
+  verifyEmail,
+};

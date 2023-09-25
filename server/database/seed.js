@@ -15,6 +15,7 @@ const setup = {
       password: "12345",
       isEmailVerified: true,
       roles: ["admin"],
+      isArchived: false,
     };
     await Controller.create(payload);
     console.log("Creating User...");
@@ -23,6 +24,7 @@ const setup = {
       email: "raktim@rumsan.com",
       password: "12345",
       isEmailVerified: true,
+      isArchived: false,
     };
     await Controller.create(userPayload);
     console.log("Completed...");
