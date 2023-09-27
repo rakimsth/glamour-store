@@ -63,6 +63,11 @@ const list = async (size, offset, search) => {
         data: 1,
         total: 1,
       },
+    },
+    {
+      $project: {
+        "data.password": 0,
+      },
     }
   );
   const result = await Model.aggregate(query).allowDiskUse(true);

@@ -27,7 +27,17 @@ const setup = {
       isArchived: false,
     };
     await Controller.create(userPayload);
-    console.log("Completed...");
+    console.log("User Completed...");
+
+    console.log("adding multiple Categories...");
+
+    console.log("Finishing multiple Categories...");
+
+    console.log("adding Products...");
+    console.log("Finishing Products...");
+
+    console.log("adding Orders...");
+    console.log("Finishing Orders...");
   },
 };
 setup.initialize();
