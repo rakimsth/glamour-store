@@ -132,3 +132,6 @@ dist
 # My ignores
 playground
 .DS_Store
+server/public/users
+server/public/products
+
