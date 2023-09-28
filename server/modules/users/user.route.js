@@ -27,9 +27,9 @@ router.post("/", secureAPI(["admin"]), async (req, res, next) => {
 
 router.get("/", secureAPI(["admin"]), async (req, res, next) => {
   try {
-    const { size, offset, name, role } = req.query;
+    const { limit, page, name, role } = req.query;
     const search = { name, role };
-    const result = await Controller.list(size, offset, search);
+    const result = await Controller.list(limit, page, search);
     res.json({ data: result, msg: "success" });
   } catch (e) {
     next(e);
