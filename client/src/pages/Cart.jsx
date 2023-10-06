@@ -18,7 +18,6 @@ const Cart = () => {
   };
 
   const getTotal = () => {
-    console.log({ cart });
     return cart.reduce(
       (acc, obj) => acc + Number(obj?.quantity) * Number(obj?.price),
       0
