@@ -16,10 +16,31 @@ const Cart = () => {
   const removeCart = (id) => {
     dispatch(removeItem(id));
   };
+
+  const getTotal = () => {
+    console.log({ cart });
+    return cart.reduce(
+      (acc, obj) => acc + Number(obj?.quantity) * Number(obj?.price),
+      0
+    );
+  };
+
+  const increase = (id) => {
+    if (id) dispatch(increaseQuantity(id));
+  };
+  const decrease = (id) => {
+    if (id) dispatch(decreaseQuantity(id));
+  };
   return (
     <>
       {cart.length > 0 ? (
-        <FilledCart items={cart} removeCart={removeCart} />
+        <FilledCart
+          items={cart}
+          removeCart={removeCart}
+          getTotal={getTotal}
+          increase={increase}
+          decrease={decrease}
+        />
       ) : (
         <EmptyCart />
       )}
@@ -27,7 +48,7 @@ const Cart = () => {
   );
 };
 
-const FilledCart = ({ items, removeCart }) => {
+const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
   return (
     <>
       <>
@@ -63,6 +84,9 @@ const FilledCart = ({ items, removeCart }) => {
                         <span
                           className="btn btn-primary"
                           style={{ margin: "2px" }}
+                          onClick={() => {
+                            decrease(item?.id);
+                          }}
                         >
                           -
                         </span>
@@ -70,6 +94,9 @@ const FilledCart = ({ items, removeCart }) => {
                         <span
                           className="btn btn-primary"
                           style={{ margin: "2px" }}
+                          onClick={() => {
+                            increase(item?.id);
+                          }}
                         >
                           +
                         </span>
@@ -89,7 +116,7 @@ const FilledCart = ({ items, removeCart }) => {
                 })}
                 <tr>
                   <td colSpan="5">Total Carts</td>
-                  <td>Total Amount</td>
+                  <td>{getTotal()}</td>
                 </tr>
               </tbody>
             </table>
