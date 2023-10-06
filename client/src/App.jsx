@@ -8,29 +8,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Footer from "./layouts/Footer";
 import Login from "./pages/Login";
 
-// const router = createBrowserRouter([
-//   {
-//     path: "/",
-//     element: <Home />,
-//   },
-//   {
-//     path: "/cart",
-//     element: <Cart />,
-//   },
-//   {
-//     path: "/products",
-//     element: <Products />,
-//   },
-//   {
-//     path: "/products/:id",
-//     element: <ProductDetail />,
-//   },
-//   {
-//     path: "*",
-//     element: <ErrorPage />,
-//   },
-// ]);
-
 function App() {
   return (
     <div className="d-flex flex-column h-100">
