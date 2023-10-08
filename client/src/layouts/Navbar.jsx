@@ -33,6 +33,12 @@ function ENavbar() {
             >
               About
             </Link>
+            <Link
+              to="/contact"
+              className="nav-link text-decoration-none text-dark"
+            >
+              Contact
+            </Link>
           </Nav>
           <Form className="d-flex">
             <Form.Control

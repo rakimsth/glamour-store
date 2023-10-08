@@ -1,5 +1,6 @@
 import NavBar from "./layouts/Navbar";
 import Cart from "./pages/Cart";
+import Contact from "./pages/Contact";
 import ErrorPage from "./pages/ErrorPage";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
@@ -18,6 +19,7 @@ function App() {
             <Routes>
               <Route path="/" element=<Home /> />
               <Route path="/cart" element=<Cart /> />
+              <Route path="/contact" element=<Contact /> />
               <Route path="/login" element=<Login /> />
               <Route path="/products" element=<Products /> />
               <Route path="/products/:id" element=<ProductDetail /> />
