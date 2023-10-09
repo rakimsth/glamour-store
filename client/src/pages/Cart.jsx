@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { BsArrowLeftSquare } from "react-icons/bs";
@@ -69,7 +70,11 @@ const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
                 {items.map((item, index) => {
                   return (
                     <tr key={item?.id || index}>
-                      <td>{item?.name}</td>
+                      <td>
+                        {item?.title.length > 50
+                          ? item?.title.substring(0, 50).concat("...")
+                          : item?.title}
+                      </td>
                       <td>
                         <Image
                           width={40}
@@ -116,6 +121,14 @@ const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
                 <tr>
                   <td colSpan="5">Total Carts</td>
                   <td>{getTotal()}</td>
+                </tr>
+                <tr>
+                  <td colSpan="5">
+                    <Link to="/products">Continue Shopping</Link>
+                  </td>
+                  <td>
+                    <Link to="/checkout">Checkout Now</Link>
+                  </td>
                 </tr>
               </tbody>
             </table>
