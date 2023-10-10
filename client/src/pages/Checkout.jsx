@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 export default function Checkout() {
   const { cart } = useSelector((state) => state.cart);
   //   const dispatch = useDispatch();
-  console.log({ cart });
 
   const getTotal = () => {
     return cart.reduce((acc, obj) => acc + obj.price * obj.quantity, 0);
@@ -27,8 +26,12 @@ export default function Checkout() {
                   >
                     <div>
                       <h6 className="my-0">
+                        <span className="badge bg-secondary">
+                          {item?.quantity}
+                        </span>
+                        &nbsp;
                         {item?.title.length > 30
-                          ? item?.title.substring(0, 30).concat("...")
+                          ? item?.title.substring(0, 27).concat("...")
                           : item?.title}
                       </h6>
                       <small className="text-muted">
@@ -146,7 +149,38 @@ export default function Checkout() {
 
             <h4 className="mb-3">Payment</h4>
 
-            <div className="d-block my-3">
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                value="COD"
+                checked
+                disabled
+              />
+              <label className="form-check-label">COD</label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                value="CC"
+                disabled
+              />
+              <label className="form-check-label">Credit/Debit Card</label>
+            </div>
+            <div className="form-check form-check-inline">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="inlineRadioOptions"
+                value="Paypal"
+                disabled
+              />
+              <label className="form-check-label">Paypal</label>
+            </div>
+            {/* <div className="d-block my-3">
               <div className="custom-control custom-radio">
                 <input
                   id="credit"
@@ -237,7 +271,7 @@ export default function Checkout() {
                 />
                 <div className="invalid-feedback">Security code required</div>
               </div>
-            </div>
+            </div> */}
             <hr className="mb-4" />
 
             <div className="d-grid gap-2">
