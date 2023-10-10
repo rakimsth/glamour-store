@@ -15,6 +15,7 @@ import ProductDetail from "./pages/ProductDetail";
 
 import { PrivateRoute } from "./components/Routes";
 import Checkout from "./pages/Checkout";
+import { CheckoutPage } from "./components/CheckoutStatus";
 
 const adminRoutes = [
   { path: "/dashboard", component: "", role: "admin" },
@@ -37,6 +38,15 @@ function App() {
                 <Route path="/about" element=<About /> />
                 <Route path="/cart" element=<Cart /> />
                 <Route path="/checkout" element=<Checkout /> />
+                <Route path="/checkout/success" element=<CheckoutPage /> />
+                <Route
+                  path="/checkout/failed"
+                  element=<CheckoutPage
+                    type="failed"
+                    msgHeader="Transaction Failed"
+                    msg="Something went wrong. Try again."
+                  />
+                />
                 <Route path="/contact" element=<Contact /> />
                 <Route path="/login" element=<Login /> />
                 <Route path="/products" element=<Products /> />
