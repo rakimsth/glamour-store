@@ -10,12 +10,13 @@ const orderSchema = new Schema({
   amount: { type: Number, required: true },
   products: [
     {
-      product: { type: ObjectId, ref: "Product", required: true },
+      product: { type: String, required: true },
       quantity: { type: Number, required: true },
       price: { type: Number, required: true },
       amount: { type: Number, required: true },
     },
   ],
+  paymentId: { type: String },
   paymentMethod: {
     type: String,
     enum: ["COD", "CC", "Paypal"],

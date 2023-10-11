@@ -1,11 +1,14 @@
 import "./Checkout.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../slices/orderSlice";
 import { removeAll } from "../slices/cartSlice";
+import * as constants from "../constants";
 
 export default function Checkout() {
+  const [checkoutUrl, setCheckoutUrl] = useState("");
+  const [paymentId, setPaymentId] = useState("");
   const { cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -27,6 +30,7 @@ export default function Checkout() {
     const { country, state, address, payment, pobox, ...rest } = payload;
     rest.address = address.concat(" ", state, " ", pobox, "", country);
     rest.amount = getTotal();
+    rest.paymentId = paymentId;
     rest.products = cart.map((item) => {
       return {
         product: item?.id,
@@ -38,7 +42,7 @@ export default function Checkout() {
     const data = await dispatch(createOrder(rest));
     if (data && data.payload.msg === "success") {
       dispatch(removeAll());
-      navigate("/checkout/success");
+      window.location.replace(checkoutUrl);
     } else {
       navigate("/checkout/failed");
     }
@@ -47,6 +51,49 @@ export default function Checkout() {
   const getTotal = () => {
     return cart.reduce((acc, obj) => acc + obj.price * obj.quantity, 0);
   };
+
+  const generatePaymentLineItems = () => {
+    return cart.map((item) => {
+      return {
+        price_data: {
+          currency: "usd",
+          product_data: {
+            name: item?.title,
+          },
+          unit_amount: item?.price * 100,
+        },
+        quantity: item?.quantity,
+      };
+    });
+  };
+
+  const createCheckoutSession = async (data) => {
+    try {
+      const response = await fetch(
+        constants.SERVER_URL + "/create-checkout-session",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      const result = await response.json();
+      setCheckoutUrl(result.data.url);
+      setPaymentId(result.data.paymentId);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    async function createSession() {
+      const lineItems = await generatePaymentLineItems();
+      createCheckoutSession(lineItems);
+    }
+    createSession();
+  }, []);
 
   return (
     <>
