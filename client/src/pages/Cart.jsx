@@ -69,17 +69,17 @@ const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
               <tbody>
                 {items.map((item, index) => {
                   return (
-                    <tr key={item?.id || index}>
+                    <tr key={item?._id || index}>
                       <td>
-                        {item?.title.length > 50
-                          ? item?.title.substring(0, 50).concat("...")
-                          : item?.title}
+                        {item?.name.length > 50
+                          ? item?.name.substring(0, 50).concat("...")
+                          : item?.name}
                       </td>
                       <td>
                         <Image
                           width={40}
                           height={40}
-                          src={item?.image}
+                          src={item?.images[0]}
                           thumbnail
                         />
                       </td>
@@ -89,7 +89,7 @@ const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
                           className="btn btn-primary"
                           style={{ margin: "2px" }}
                           onClick={() => {
-                            decrease(item?.id);
+                            decrease(item?._id);
                           }}
                         >
                           -
@@ -99,7 +99,7 @@ const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
                           className="btn btn-primary"
                           style={{ margin: "2px" }}
                           onClick={() => {
-                            increase(item?.id);
+                            increase(item?._id);
                           }}
                         >
                           +
@@ -111,7 +111,7 @@ const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
                           color="red"
                           size={24}
                           onClick={() => {
-                            removeCart(item?.id);
+                            removeCart(item?._id);
                           }}
                         />
                       </td>

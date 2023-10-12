@@ -6,24 +6,24 @@ const create = (payload) => {
   // Create unique ID
   payload.id = uuidv4();
   // Decrease the product stock
-  // const products = payload?.products;
-  // products.map(async (product) => {
-  //   const { product: id, quantity } = product;
-  //   // find the product
-  //   const productInfo = await productModel.findOne({ _id: id });
-  //   if (!productInfo) throw new Error("Product not found");
-  //   // Update the stock
-  //   const newQuantity = productInfo?.quantity - quantity;
-  //   if (newQuantity < 0) {
-  //     throw new Error(`${productInfo?.name} Stock is depleted`);
-  //   }
-  //   // Write the new Quantity to product stock
-  //   await productModel.findOneAndUpdate(
-  //     { _id: id },
-  //     { quantity: newQuantity },
-  //     { new: true }
-  //   );
-  // });
+  const products = payload?.products;
+  products.map(async (product) => {
+    const { product: id, quantity } = product;
+    // find the product
+    const productInfo = await productModel.findOne({ _id: id });
+    if (!productInfo) throw new Error("Product not found");
+    // Update the stock
+    const newQuantity = productInfo?.quantity - quantity;
+    if (newQuantity < 0) {
+      throw new Error(`${productInfo?.name} Stock is depleted`);
+    }
+    // Write the new Quantity to product stock
+    await productModel.findOneAndUpdate(
+      { _id: id },
+      { quantity: newQuantity },
+      { new: true }
+    );
+  });
   // Create the order
   return Model.create(payload);
 };

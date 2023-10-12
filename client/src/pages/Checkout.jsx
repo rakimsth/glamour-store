@@ -34,7 +34,7 @@ export default function Checkout() {
     rest.paymentId = paymentId;
     rest.products = cart.map((item) => {
       return {
-        product: item?.id,
+        product: item?._id,
         quantity: item?.quantity,
         price: item?.price,
         amount: Number(item?.price) * Number(item?.quantity),
@@ -59,7 +59,7 @@ export default function Checkout() {
         price_data: {
           currency: "usd",
           product_data: {
-            name: item?.title,
+            name: item?.name,
           },
           unit_amount: item?.price * 100,
         },
@@ -112,9 +112,9 @@ export default function Checkout() {
                           {item?.quantity}
                         </span>
                         &nbsp;
-                        {item?.title.length > 30
-                          ? item?.title.substring(0, 27).concat("...")
-                          : item?.title}
+                        {item?.name.length > 30
+                          ? item?.name.substring(0, 27).concat("...")
+                          : item?.name}
                       </h6>
                       <small className="text-muted">
                         {" "}
