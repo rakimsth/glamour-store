@@ -26,7 +26,7 @@ const orderSchema = new Schema({
   payment: { type: String, default: "COD", required: true },
   status: {
     type: String,
-    enum: ["pending", "completed"],
+    enum: ["pending", "completed", "expired", "failed"],
     default: "pending",
     required: true,
   },
