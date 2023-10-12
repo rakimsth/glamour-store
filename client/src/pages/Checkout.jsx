@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createOrder } from "../slices/orderSlice";
 import { removeAll } from "../slices/cartSlice";
-import * as constants from "../constants";
+import instance from "../utils/api";
+import { URLS } from "../constants";
 
 export default function Checkout() {
   const [checkoutUrl, setCheckoutUrl] = useState("");
@@ -69,17 +70,11 @@ export default function Checkout() {
 
   const createCheckoutSession = async (data) => {
     try {
-      const response = await fetch(
-        constants.SERVER_URL + "/create-checkout-session",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
+      const response = await instance.post(
+        URLS.ORDERS + "/create-checkout-session",
+        data
       );
-      const result = await response.json();
+      const result = response.data;
       setCheckoutUrl(result.data.url);
       setPaymentId(result.data.paymentId);
     } catch (error) {

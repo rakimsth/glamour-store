@@ -130,4 +130,34 @@ const approve = (id, payload) => {
   );
 };
 
-module.exports = { approve, create, deleteById, getById, list, updateById };
+const updatePaymentStatus = async (payload) => {
+  console.log("payload", payload);
+  const { status, id } = payload;
+  const checkOrder = await Model.findOne({ paymentId: id });
+  if (!checkOrder) throw new Error("Order not found...");
+  if (status === "complete") {
+    await Model.findOneAndUpdate(
+      { paymentId: id },
+      { status: "completed" },
+      { new: true }
+    );
+  }
+  if (status === "expired") {
+    await Model.findOneAndUpdate(
+      { paymentId: id },
+      { status: "expired" },
+      { new: true }
+    );
+    // Update the product quantity
+  }
+};
+
+module.exports = {
+  approve,
+  create,
+  deleteById,
+  getById,
+  list,
+  updateById,
+  updatePaymentStatus,
+};

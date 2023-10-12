@@ -1,6 +1,9 @@
 const router = require("express").Router();
+const stripe = require("stripe")(process.env.SECRET_KEY);
 const Controller = require("./order.controller");
 const secureAPI = require("../../utils/secure");
+
+const FRONTEND_URL = process.env.FRONTEND_URL;
 
 router.get("/", secureAPI(["admin"]), async (req, res, next) => {
   try {
@@ -61,6 +64,23 @@ router.patch("/:id", secureAPI(["admin"]), async (req, res, next) => {
     };
     const result = await Controller.approve(req.params.id, payload);
     res.json({ data: result, msg: "success" });
+  } catch (e) {
+    next(e);
+  }
+});
+
+router.post("/create-checkout-session", async (req, res, next) => {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      line_items: req.body,
+      mode: "payment",
+      success_url: `${FRONTEND_URL}/checkout/success`,
+      cancel_url: `${FRONTEND_URL}/checkout/failed`,
+    });
+    res.json({
+      data: { url: session.url, paymentId: session.id },
+      msg: "success",
+    });
   } catch (e) {
     next(e);
   }
