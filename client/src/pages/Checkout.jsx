@@ -42,7 +42,7 @@ export default function Checkout() {
     const data = await dispatch(createOrder(rest));
     if (data && data.payload.msg === "success") {
       dispatch(removeAll());
-      rest.paymentMethod === "STRIPE"
+      checkoutPayload.paymentMethod === "STRIPE"
         ? window.location.replace(checkoutUrl)
         : navigate("/checkout/success");
     } else {

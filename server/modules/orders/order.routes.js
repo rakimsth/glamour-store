@@ -71,11 +71,14 @@ router.patch("/:id", secureAPI(["admin"]), async (req, res, next) => {
 
 router.post("/create-checkout-session", async (req, res, next) => {
   try {
+    let dt = new Date();
+    dt.setMinutes(dt.getMinutes() + 30);
     const session = await stripe.checkout.sessions.create({
       line_items: req.body,
       mode: "payment",
       success_url: `${FRONTEND_URL}/checkout/success`,
       cancel_url: `${FRONTEND_URL}/checkout/failed`,
+      expires_at: dt,
     });
     res.json({
       data: { url: session.url, paymentId: session.id },

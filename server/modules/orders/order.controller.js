@@ -139,14 +139,14 @@ const updatePaymentStatus = async (payload) => {
     if (status === "complete") {
       await Model.findOneAndUpdate(
         { paymentId: id },
-        { status: "completed" },
+        { status: "completed", updated_at: new Date() },
         { new: true }
       );
     }
     if (status === "expired") {
       const order = await Model.findOneAndUpdate(
         { paymentId: id },
-        { status: "failed" },
+        { status: "failed", updated_at: new Date() },
         { new: true }
       );
       // Update the product quantity
@@ -169,6 +169,7 @@ const updatePaymentStatus = async (payload) => {
           { new: true }
         );
       });
+      return true;
     }
   } catch (e) {
     throw new Error(e);
