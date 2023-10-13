@@ -23,40 +23,48 @@ app.use(express.static("public"));
 app.post(
   "/api/v1/orders/webhook",
   express.raw({ type: "application/json" }),
-  async (request, response) => {
-    const sig = request.headers["stripe-signature"];
-
-    let event;
-
+  async (request, response, next) => {
     try {
-      event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-    } catch (err) {
-      console.log({ err });
-      response.status(400).send(`Webhook Error: ${err.message}`);
-      return;
+      const sig = request.headers["stripe-signature"];
+
+      let event;
+
+      try {
+        event = stripe.webhooks.constructEvent(
+          request.body,
+          sig,
+          endpointSecret
+        );
+      } catch (err) {
+        console.log({ err });
+        response.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+      }
+      // Handle the event
+      switch (event.type) {
+        case "checkout.session.async_payment_failed":
+          const async_payment_failed = event.data.object;
+          await Controller.updatePaymentStatus(async_payment_failed);
+          break;
+        case "checkout.session.async_payment_succeeded":
+          const async_payment_succeeded = event.data.object;
+          await Controller.updatePaymentStatus(async_payment_succeeded);
+          break;
+        case "checkout.session.completed":
+          const session_completed = event.data.object;
+          await Controller.updatePaymentStatus(session_completed);
+          break;
+        case "checkout.session.expired":
+          const session_expired = event.data.object;
+          await Controller.updatePaymentStatus(session_expired);
+          break;
+        default:
+          console.log(`Unhandled event type ${event.type}`);
+      }
+      response.json({ received: true });
+    } catch (e) {
+      next(e);
     }
-    // Handle the event
-    switch (event.type) {
-      case "checkout.session.async_payment_failed":
-        const async_payment_failed = event.data.object;
-        await Controller.updatePaymentStatus(async_payment_failed);
-        break;
-      case "checkout.session.async_payment_succeeded":
-        const async_payment_succeeded = event.data.object;
-        await Controller.updatePaymentStatus(async_payment_succeeded);
-        break;
-      case "checkout.session.completed":
-        const session_completed = event.data.object;
-        await Controller.updatePaymentStatus(session_completed);
-        break;
-      case "checkout.session.expired":
-        const session_expired = event.data.object;
-        await Controller.updatePaymentStatus(session_expired);
-        break;
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
-    response.json({ received: true });
   }
 );
 

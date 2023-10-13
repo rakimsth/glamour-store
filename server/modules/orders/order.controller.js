@@ -131,24 +131,47 @@ const approve = (id, payload) => {
 };
 
 const updatePaymentStatus = async (payload) => {
-  console.log("payload", payload);
-  const { status, id } = payload;
-  const checkOrder = await Model.findOne({ paymentId: id });
-  if (!checkOrder) throw new Error("Order not found...");
-  if (status === "complete") {
-    await Model.findOneAndUpdate(
-      { paymentId: id },
-      { status: "completed" },
-      { new: true }
-    );
-  }
-  if (status === "expired") {
-    await Model.findOneAndUpdate(
-      { paymentId: id },
-      { status: "expired" },
-      { new: true }
-    );
-    // Update the product quantity
+  try {
+    const { status, id } = payload;
+    console.log("payload", { status, id });
+    const checkOrder = await Model.findOne({ paymentId: id });
+    if (!checkOrder) throw new Error("Order not found...");
+    if (status === "complete") {
+      await Model.findOneAndUpdate(
+        { paymentId: id },
+        { status: "completed" },
+        { new: true }
+      );
+    }
+    if (status === "expired") {
+      const order = await Model.findOneAndUpdate(
+        { paymentId: id },
+        { status: "failed" },
+        { new: true }
+      );
+      // Update the product quantity
+      // Increase the product stock
+      const products = order?.products;
+      products.map(async (product) => {
+        const { product: id, quantity } = product;
+        // find the product
+        const productInfo = await productModel.findOne({ _id: id });
+        if (!productInfo) throw new Error("Product not found");
+        // Update the stock
+        const newQuantity = productInfo?.quantity + quantity;
+        // Write the new Quantity to product stock
+        await productModel.findOneAndUpdate(
+          { _id: id },
+          {
+            quantity: newQuantity,
+            updated_at: new Date(),
+          },
+          { new: true }
+        );
+      });
+    }
+  } catch (e) {
+    throw new Error(e);
   }
 };
 

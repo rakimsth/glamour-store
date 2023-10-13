@@ -19,14 +19,13 @@ const orderSchema = new Schema({
   paymentId: { type: String },
   paymentMethod: {
     type: String,
-    enum: ["COD", "CC", "Paypal"],
+    enum: ["COD", "STRIPE"],
     default: "COD",
     required: true,
   },
-  payment: { type: String, default: "COD", required: true },
   status: {
     type: String,
-    enum: ["pending", "completed", "expired"],
+    enum: ["pending", "completed", "failed"],
     default: "pending",
     required: true,
   },
