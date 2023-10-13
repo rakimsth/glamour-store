@@ -35,9 +35,13 @@ const Products = () => {
                     <div className="col-6 col-lg-3" key={product?._id || index}>
                       <div className="product-card-10">
                         <div className="product-card-image">
-                          {/* <div className="badge-ribbon">
-                              <span className="badge bg-danger">Sale</span>
-                          </div> */}
+                          {product?.quantity < 1 && (
+                            <div className="badge-ribbon">
+                              <span className="badge bg-danger">
+                                Out of Stock
+                              </span>
+                            </div>
+                          )}
                           <div className="product-media">
                             <a href="#">
                               <img
@@ -81,6 +85,7 @@ const Products = () => {
                               onClick={() => {
                                 dispatch(addToCart(product));
                               }}
+                              disabled={product?.quantity < 1 ? true : false}
                             >
                               <i className="fa fa-shopping-cart"></i>
                             </button>

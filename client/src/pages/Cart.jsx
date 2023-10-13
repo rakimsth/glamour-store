@@ -13,6 +13,7 @@ import {
 
 const Cart = () => {
   const { cart } = useSelector((state) => state.cart);
+  const { products } = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const removeCart = (id) => {
     dispatch(removeItem(id));
@@ -35,6 +36,7 @@ const Cart = () => {
     <>
       {cart.length > 0 ? (
         <FilledCart
+          products={products}
           items={cart}
           removeCart={removeCart}
           getTotal={getTotal}
@@ -48,7 +50,14 @@ const Cart = () => {
   );
 };
 
-const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
+const FilledCart = ({
+  items,
+  products,
+  removeCart,
+  getTotal,
+  increase,
+  decrease,
+}) => {
   return (
     <>
       <>
@@ -99,7 +108,7 @@ const FilledCart = ({ items, removeCart, getTotal, increase, decrease }) => {
                           className="btn btn-primary"
                           style={{ margin: "2px" }}
                           onClick={() => {
-                            increase(item?._id);
+                            increase({ id: item?._id, products });
                           }}
                         >
                           +
