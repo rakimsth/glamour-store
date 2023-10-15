@@ -8,7 +8,7 @@ const create = (payload) => {
 
 const list = async (limit, page, search) => {
   const pageNum = parseInt(page) || 1;
-  const size = parseInt(limit) || 5;
+  const size = parseInt(limit) || 20;
   const query = [];
   if (search?.name) {
     query.push({
