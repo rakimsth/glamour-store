@@ -21,13 +21,13 @@ export default function Checkout() {
     country: "",
     state: "",
     pobox: "",
-    paymentMethod: "",
+    paymentMethod: "COD",
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const payload = checkoutPayload;
-    const { country, state, address, payment, pobox, ...rest } = payload;
+    const { country, state, address, pobox, ...rest } = payload;
     rest.address = address.concat(" ", state, " ", pobox, "", country);
     rest.amount = getTotal();
     rest.paymentId = paymentId;
@@ -276,6 +276,9 @@ export default function Checkout() {
                 type="radio"
                 name="inlineRadioOptions"
                 value={checkoutPayload?.paymentMethod}
+                checked={
+                  checkoutPayload?.paymentMethod === "COD" ? true : false
+                }
                 onChange={() =>
                   setCheckoutPayload((prev) => {
                     return { ...prev, paymentMethod: "COD" };
@@ -290,6 +293,9 @@ export default function Checkout() {
                 type="radio"
                 name="inlineRadioOptions"
                 value={checkoutPayload?.paymentMethod}
+                checked={
+                  checkoutPayload?.paymentMethod === "STRIPE" ? true : false
+                }
                 onChange={() =>
                   setCheckoutPayload((prev) => {
                     return { ...prev, paymentMethod: "STRIPE" };
