@@ -2,17 +2,25 @@ import "./Products.css";
 import { useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { addToCart } from "../slices/cartSlice";
-import { fetchProducts } from "../slices/productSlice";
+import {
+  fetchProducts,
+  setCurrentPage,
+  setLimit,
+} from "../slices/productSlice";
 import SkeletalLoader from "../components/SkeletalLoader";
 
 import { useDispatch, useSelector } from "react-redux";
+import Paginate from "../components/Paginate";
 
 const Products = () => {
-  const { products, loading } = useSelector((state) => state.products);
+  const { products, loading, total, limit, currentPage } = useSelector(
+    (state) => state.products
+  );
   const dispatch = useDispatch();
+
   const initFetch = useCallback(() => {
-    dispatch(fetchProducts());
-  }, [dispatch]);
+    dispatch(fetchProducts({ limit, page: currentPage }));
+  }, [dispatch, limit, currentPage]);
 
   useEffect(() => {
     initFetch();
@@ -119,6 +127,16 @@ const Products = () => {
                   )}
                 </div>
               )}
+            </div>
+            <div className="mt-5">
+              <Paginate
+                total={total}
+                limit={limit}
+                dispatch={dispatch}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                setLimit={setLimit}
+              />
             </div>
           </div>
         </section>
