@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { list } from "../services/products";
+import { list, getById } from "../services/products";
 
 const initialState = {
   products: [],
@@ -15,6 +15,14 @@ export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
   async ({ limit, page }) => {
     const res = await list(limit, page);
+    return res.data;
+  }
+);
+
+export const getProduct = createAsyncThunk(
+  "products/getProduct",
+  async (id) => {
+    const res = await getById(id);
     return res.data;
   }
 );
@@ -43,7 +51,18 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.error.message;
+      })
+      .addCase(getProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.product = action.payload.data;
+      })
+      .addCase(getProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
       });
   },
 });
